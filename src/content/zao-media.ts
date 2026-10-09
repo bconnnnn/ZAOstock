@@ -17,8 +17,8 @@ import { LINEUP_NAMES } from './site';
 // - Day 259 og:description "LyonsDen is playing ZAOstock"
 // - Day 260 og:description "Tom Fellenz is playing ZAOstock"
 // - Day 268 "the Maine artists on the ZAOstock bill" names all five Maine acts
-// The single-act drafts for Michael Anderson, The Crown Vics, OPEN X and
-// Acadia Rising in zaoonparagraph were not published under those days, so
+// The single-act drafts for Michael Anderson, The Crown Vics and OPEN X
+// in zaoonparagraph were not published under those days, so
 // they are not here. Add a row when an edition goes live, not before.
 
 export type MediaItem = {
@@ -35,7 +35,6 @@ export const ZAO_MEDIA: Readonly<Record<string, readonly MediaItem[]>> = {
   'The Crown Vics': [DAY_268],
   'OPEN X': [DAY_268],
   'Grass Rug': [DAY_268],
-  'Acadia Rising': [DAY_268],
   'Michael Anderson': [DAY_268],
   DCoop: [
     {
@@ -50,9 +49,14 @@ export const ZAO_MEDIA: Readonly<Record<string, readonly MediaItem[]>> = {
     },
   ],
   'Tom Fellenz': [
+    // Day 260 ("Tom Fellenz is playing ZAOstock", 2026-09-18) was removed:
+    // paragraph.com/@thezao/year-of-the-zabal-day-260 returns 404 in a real
+    // browser on 2026-09-30, and the Wayback Machine has no copy. Restore the
+    // entry if the edition is republished. Until then Day 263 stands in: it
+    // names him in the running order and says he had his own edition.
     {
-      title: 'Year of the ZABAL, Day 260: Tom Fellenz is playing ZAOstock',
-      url: 'https://paragraph.com/@thezao/year-of-the-zabal-day-260',
+      title: 'Year of the ZABAL, Day 263: 13 days until ZAOstock',
+      url: 'https://paragraph.com/@thezao/year-of-the-zabal-day-263-13-days-until-zaostock',
     },
   ],
 };
