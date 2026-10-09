@@ -1,0 +1,41 @@
+name: Rebase the two reviewed accessibility PRs
+on:
+  push:
+    branches: [codex/rebase-zao-prs-20261010]
+    paths: [.github/workflows/rebase-zao-prs.yml]
+permissions:
+  contents: write
+jobs:
+  rebase:
+    if: github.repository == 'bconnnnn/ZAOstock'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+      - name: Preserve tested trees and replace only the two PR branch histories
+        shell: bash
+        run: |
+          set -euo pipefail
+          main=41ea9b08d314e67886eb5cb6c3aa5c57df55e27d
+          old377=b1697dc4463ff8eb239ece0c00c8b255048936fe
+          old378=8b249333229e2c940a20e6b46e326dd9d76b64d5
+          git fetch origin fix/home-keyboard-focus fix/skip-to-main
+          git fetch https://github.com/ZAODEVZ/ZAOstock.git main
+          test "$(git rev-parse FETCH_HEAD)" = "$main"
+          test "$(git ls-remote origin refs/heads/fix/home-keyboard-focus | cut -f1)" = "$old377"
+          test "$(git ls-remote origin refs/heads/fix/skip-to-main | cut -f1)" = "$old378"
+          test "$(git rev-parse "$old377^{tree}")" = c73821a231104e1ca38849f6dd2c9d3f508cb460
+          test "$(git rev-parse "$old378^{tree}")" = 7481352e33227981c3715b5c63ecdf8bdf9cb76c
+          git config user.name bconnnnn
+          git config user.email 234079758+bconnnnn@users.noreply.github.com
+          new377=$(printf '%s\n' 'fix(a11y): keep homepage card focus outlines inside the grid' | git commit-tree "$old377^{tree}" -p "$main")
+          new378=$(printf '%s\n' 'fix(a11y): make main-content focusable for the skip link' | git commit-tree "$old378^{tree}" -p "$main")
+          git diff --exit-code "$old377" "$new377"
+          git diff --exit-code "$old378" "$new378"
+          git push --atomic origin \
+            --force-with-lease=refs/heads/fix/home-keyboard-focus:$old377 \
+            --force-with-lease=refs/heads/fix/skip-to-main:$old378 \
+            "$new377:refs/heads/fix/home-keyboard-focus" \
+            "$new378:refs/heads/fix/skip-to-main"
+          printf 'PR 377 head: %s\nPR 378 head: %s\n' "$new377" "$new378"
